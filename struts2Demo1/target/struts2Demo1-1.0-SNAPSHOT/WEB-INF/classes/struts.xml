@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <!-- 配置文件上传的文件大小-->
+   <!-- <constant name="struts.multipart.maxSize" value="1048576000000"></constant>   -->
+    <package name="struts2" extends="struts-default">
+
+        <interceptors>
+            <interceptor name="theInterceptor1" class="org.whut.platform.interceptor.TheInterceptor1">
+                <param name="test">zhang</param>
+            </interceptor>
+            <interceptor name="theInterceptor2" class="org.whut.platform.interceptor.TheInterceptor2">
+            </interceptor>
+            <interceptor name="theInterceptor3" class="org.whut.platform.interceptor.TheInterceptor3">
+            </interceptor>
+            <interceptor name="loginInterceptor" class="org.whut.platform.interceptor.LoginInterceptor">
+
+            </interceptor>
+            <!--  定义拦截器栈-->
+            <interceptor-stack name="myDefaultInterceptorStack">
+              <!--  <interceptor-ref name="loginInterceptor"/> -->
+                <interceptor-ref name="defaultStack"/>
+            </interceptor-stack>
+        </interceptors>
+        <!--自定义的默认拦截器栈   已修改默认的-->
+        <default-interceptor-ref name="myDefaultInterceptorStack"/>
+        <!-- 全局结果异常-->
+        <global-results>
+            <result name="login">/error.jsp</result>
+        </global-results>
+        
+        <!--全局异常定义
+        <global-exception-mappings>
+            <exception-mapping exception="org.whut.platform.exception.PasswordException" result="passwordInvalid"></exception-mapping>
+            <exception-mapping exception="org.whut.platform.exception.UsernameException" result="usernameInvalid"></exception-mapping>
+        </global-exception-mappings>    -->
+      <action name="login" class="org.whut.platform.struts2.LoginAction">
+          <!--局部异常结果   <exception-mapping exception="org.whut.platform.exception.UsernameException" result="usernameInvalid"></exception-mapping>
+             <exception-mapping exception="org.whut.platform.exception.PasswordException" result="passwordInvalid"></exception-mapping>
+            <result name="usernameInvalid">/usernameInvalid.jsp</result>
+          <result name="passwordInvalid">/passwordInvalid.jsp</result>     -->
+
+          <result name="success">/result.jsp</result>
+          <result name="input">/login.jsp</result>
+        </action>
+        <action name="login2" class="org.whut.platform.struts2.LoginAction2">
+            <result name="success">/result.jsp</result>
+        </action>
+
+        <!--redirectAction重定向Action例子-->
+        <action name="action1" class="org.whut.platform.struts2.Action1" method="myExecute">
+           <!-- 不带参数的重定向
+           <result name="success" type="redirectAction">action2</result>
+           -->
+            <!--  带参数的重定向 ${username}中的名字为Action1中的属性名
+             name="name" 为重定向的action的属性名
+            <result name="success" type="redirectAction">
+                <param name="actionName">action2</param>
+                <param name="name">${username}</param>
+                <param name="password">${password}</param>
+                <param name="nameAndpassword">${usernameAndPassword}</param>
+            </result>   -->
+            <!-- chain为请求转发    -->
+            <result name="success" type="chain">
+                <param name="actionName">action2</param>
+            <!--  只有是重定向的时候才用这些参数
+                 请求里面根本没有 usernameAndPassword   因此action2.jsp中没有数据  -->
+              <param name="username">${username}</param>
+                <param name="password">${password}</param>
+                <param name="nameAndPassword">${usernameAndPassword}</param>
+            </result>
+
+            <interceptor-ref name="theInterceptor1"></interceptor-ref>
+            <interceptor-ref name="theInterceptor2"></interceptor-ref>
+            <interceptor-ref name="theInterceptor3">
+                <param name="includeMethods">execute,myExecute</param>
+            </interceptor-ref>
+            <interceptor-ref name="defaultStack"></interceptor-ref>
+        </action>
+
+        <action name="action2" class="org.whut.platform.struts2.Action2">
+            <result name="success">/action2.jsp</result>
+        </action>
+        
+        <action name="userAction" class="org.whut.platform.struts2.UserAction">
+            <result name="success">/output.jsp</result>
+        </action>
+
+        <action name="userAction2" class="org.whut.platform.struts2.UserAction2">
+            <result name="success">/output.jsp</result>
+        </action>
+        <action name="registerAction" class="org.whut.platform.struts2.RegisterAction">
+            <result name="success">/registerResult.jsp</result>
+            <result name="input">/register.jsp</result>
+        </action>
+
+        <!--
+            通过Session Token（Session 令牌）来防止表单重复提交   原理如下：
+             当客户端请求页面时，服务器会通过token标签生成一个随机数，并且将该随机数放置到session中，
+             然后将该随机数发向客户端；如果客户第一次提交，那么会将该随机数发往服务器端。服务器端会
+             接收该随机数并将该数与session中的随机数进行比较，这时两者的值是相同的，服务器认为是第一次
+             提交，并且将更新服务器端的这个随机数值；如果此时再次重读提交，那么客户端向服务器端发送的
+             随机数还是原来的那个，而服务器端的随机数则已经发生了变化，两者不同，服务器就认为这是重复提交
+             进而转向invalid.token所指向的结果页面
+
+        -->
+
+        <action name="token" class="org.whut.platform.struts2.TokenAction">
+            <result name="success">/tokenSuccess.jsp</result>
+            <result name="invalid.token">/tokenFailure.jsp</result>
+
+            <interceptor-ref name="token"></interceptor-ref>
+            <interceptor-ref name="defaultStack"></interceptor-ref>
+        </action>
+
+        <action name="fileUpload" class="org.whut.platform.struts2.UploadAction">
+            <result name="success">/fileUploadResult.jsp</result>
+        </action>
+        <action name="fileUpload2" class="org.whut.platform.struts2.UploadAction2">
+            <result name="success">/fileUploadResult2.jsp</result>
+        </action>
+
+        <action name="downloadFile" class="org.whut.platform.struts2.DownloadAction">
+            <result type="stream">
+                <param name="contentDisposition">attachment;filename="readMe.txt"</param>  <!--下载文件名称由这个filename决定-->
+                <param name="inputName">downloadFile</param>
+            </result>
+        </action>
+
+        <action name="downloadFile2" class="org.whut.platform.struts2.DownloadAction2">
+            <result type="stream">
+                <param name="contentDisposition">attachment;filename=${filename}</param>
+                <param name="inputName">downloadFile</param>
+            </result>
+        </action>
+    </package>
+
+    <package name="hello" extends="struts-default" namespace="/theNamespace">
+
+        <action name="namespace" class="org.whut.platform.struts2.NamespaceAction">
+            <result name="success">output.jsp</result>
+        </action>
+
+    </package>
+</struts>

@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="struts2_axaj:war">
+    <output-path>$PROJECT_DIR$/struts2_axaj/target</output-path>
+    <root id="archive" name="struts2_axaj-1.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="struts2_axaj:war exploded" />
+    </root>
+  </artifact>
+</component>

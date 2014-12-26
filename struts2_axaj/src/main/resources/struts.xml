@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="struts2_ajax" extends="json-default">
+
+        <action name="getXMLAction" class="org.whut.platform.action.xml.GetXMLAction">
+
+        </action>
+
+        <action name="getJsonAction" class="org.whut.platform.action.json.GetJsonAction">
+
+        </action>
+
+        <action name="getJsonAction2" class="org.whut.platform.action.json.GetJsonAction2">
+            <result name="success" type="json">
+                <!-- 排除某个属性-->
+                <param name="excludeProperties">address</param>
+            </result>
+        </action>
+
+        <action name="ognlAction" class="org.whut.platform.action.ognl.OgnlAction">
+            <!--等待拦截器   即访问服务器时  等待时候的拦截器
+            <interceptor-ref name="defaultStack"/>
+            <interceptor-ref name="execAndWait"/>
+              <result name="wait">/wait.jsp</result>-->
+            <result name="success">/ognl.jsp</result>
+
+        </action>
+    </package>
+
+
+</struts>
